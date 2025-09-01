@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let timer;
     let timeElapsed = 0;
     let totalTypedChars = 0; // 총 입력된 문자 수
-    let totalCorrectChars = 0; // 총 정확하게 입력된 문자 수
     let gameStarted = false;
     let MiddleShiftActive = false;
     let keyPressed = {};
@@ -255,11 +254,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Backspace 처리
         if (e.code === KEY_CODE_BACKSPACE) {
             if (userInput.length > 0) {
-                const lastChar = userInput[userInput.length - 1];
-                const problemChar = currentHiraganaSentence[userInput.length - 1];
-                if (lastChar === problemChar) {
-                    totalCorrectChars--;
-                }
                 totalTypedChars--;
 
                 userInput = userInput.slice(0, -1);
@@ -337,32 +331,18 @@ document.addEventListener('DOMContentLoaded', () => {
             // MiddleShiftActive 상태라면, 탁음/반탁음 변환 대신 Shifted 문자 입력으로 간주
             if (MiddleShiftActive) {
                 totalTypedChars++;
-                if (typedChar === currentHiraganaSentence[userInput.length]) {
-                    totalCorrectChars++;
-                }
                 userInput += typedChar;
             } else if (userInput.length > 0) {
                 const prevChar = userInput[userInput.length - 1];
                 const map = (e.code === KEY_CODE_DAKUTEN) ? dakutenMap : handakutenMap;
                 const convertedChar = map[prevChar];
                 if (convertedChar) {
-                    // Adjust totalCorrectChars for conversion
-                    const problemCharIndex = userInput.length - 1;
-                    if (prevChar === currentHiraganaSentence[problemCharIndex]) {
-                        totalCorrectChars--; // Decrement if previous char was correct
-                    }
-                    if (convertedChar === currentHiraganaSentence[problemCharIndex]) {
-                        totalCorrectChars++; // Increment if new char is correct
-                    }
                     userInput = userInput.slice(0, -1) + convertedChar;
                 }
             }
         } else {
             // Normal character input
             totalTypedChars++;
-            if (typedChar === currentHiraganaSentence[userInput.length]) {
-                totalCorrectChars++;
-            }
             userInput += typedChar;
         }
 
